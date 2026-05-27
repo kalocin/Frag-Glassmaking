@@ -33,7 +33,7 @@ namespace GlassMaking.Handbook
 				{
 					outComponents.Add(new ClearFloatTextComponent(capi, 7f));
 					outComponents.AddHandbookBoldRichText(capi, Lang.Get("glassmaking:Turns out when annealing") + "\n", openDetailPageFor);
-					var element = new ItemstackTextComponent(capi, output.ResolvedItemstack, 40.0, 10.0,
+					var element = new ItemstackTextComponent(capi, output.ResolvedItemStack, 40.0, 10.0,
 						EnumFloat.Inline, cs => openDetailPageFor(GuiHandbookItemStackPage.PageCodeForStack(cs)));
 					outComponents.Add(element);
 

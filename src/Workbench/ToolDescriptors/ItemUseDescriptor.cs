@@ -21,9 +21,9 @@ namespace GlassMaking.Workbench.ToolDescriptors
 			{
 				if(ingredient.Resolve(capi.World, "workbench recipe item"))
 				{
-					var element = new SlideshowItemstackTextComponent(capi, new ItemStack[] { ingredient.ResolvedItemstack }, 40.0, EnumFloat.Inline,
+					var element = new SlideshowItemstackTextComponent(capi, new ItemStack[] { ingredient.ResolvedItemStack }, 40.0, EnumFloat.Inline,
 						cs => openDetailPageFor(GuiHandbookItemStackPage.PageCodeForStack(cs)));
-					element.ShowStackSize = ingredient.ResolvedItemstack.StackSize > 1;
+					element.ShowStackSize = ingredient.ResolvedItemStack.StackSize > 1;
 					outComponents.Add(element);
 					outComponents.Add(new RichTextComponent(capi, Lang.Get("glassmaking:Hold in your hands"), CairoFont.WhiteSmallText()));
 				}

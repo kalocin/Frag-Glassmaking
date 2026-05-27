@@ -86,7 +86,7 @@ namespace GlassMaking.Blocks
 						if(block.TryPlaceBlock(world, byPlayer, new BlockSelection { Position = blockSel.Position.UpCopy(), Face = BlockFacing.UP }, itemstack, Variant["side"]))
 						{
 							var upPos = blockSel.Position.UpCopy();
-							world.PlaySoundAt(itemstack.Block.GetSounds(world.BlockAccessor, blockSel, itemstack)?.Place,
+							world.PlaySoundAt(itemstack.Block.GetSounds(world.BlockAccessor, blockSel, itemstack)?.Place.Location,
 								upPos.X + 0.5, upPos.Y + 1, upPos.Z + 0.5, byPlayer, true, 16f);
 							if(byPlayer.WorldData.CurrentGameMode != EnumGameMode.Creative)
 							{

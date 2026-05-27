@@ -312,7 +312,7 @@ namespace GlassMaking.Blocks
 				{
 					processes[index]!.AnnealTemperature = properties["temperature"].AsObject<MinMaxFloat>();
 					processes[index]!.AnnealTime = properties["time"].AsInt() / 3600.0;
-					processes[index]!.Output = output.ResolvedItemstack;
+					processes[index]!.Output = output.ResolvedItemStack;
 					return;
 				}
 			}

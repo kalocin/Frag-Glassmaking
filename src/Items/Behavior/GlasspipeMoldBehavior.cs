@@ -217,8 +217,8 @@ namespace GlassMaking.Items.Behavior
 
 		public bool MatchesForCrafting(ItemStack inputStack, GridRecipe gridRecipe, CraftingRecipeIngredient ingredient, ref EnumHandling handling)
 		{
-			if(gridRecipe.Output.ResolvedItemstack?.Item is ItemGlassworkPipe &&
-				ingredient.ResolvedItemstack?.Item is ItemGlassworkPipe &&
+			if(gridRecipe.Output.ResolvedItemStack?.Item is ItemGlassworkPipe &&
+				ingredient.ResolvedItemStack?.Item is ItemGlassworkPipe &&
 				gridRecipe.Attributes?.IsTrue("breakglass") == true)
 			{
 				handling = EnumHandling.Handled;
@@ -229,7 +229,7 @@ namespace GlassMaking.Items.Behavior
 
 		public void OnConsumedByCrafting(ItemSlot[] allInputSlots, ItemSlot stackInSlot, GridRecipe gridRecipe, CraftingRecipeIngredient fromIngredient, IPlayer byPlayer, int quantity, ref EnumHandling handling)
 		{
-			if(gridRecipe.Output.ResolvedItemstack?.Item is ItemGlassworkPipe && gridRecipe.Attributes?.IsTrue("breakglass") == true)
+			if(gridRecipe.Output.ResolvedItemStack?.Item is ItemGlassworkPipe && gridRecipe.Attributes?.IsTrue("breakglass") == true)
 			{
 				if(api.Side == EnumAppSide.Server)
 				{

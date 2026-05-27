@@ -343,6 +343,11 @@ namespace GlassMaking.Blocks
 			}
 		}
 
+		void IBlockEntityContainer.CheckInventoryClearedMidTick()
+		{
+			// Glass blend items don't decay; state transitions explicitly clear the inventory.
+		}
+
 		void ITimeBasedHeatReceiver.SetHeatSource(ITimeBasedHeatSourceControl? heatSource)
 		{
 			this.heatSource = heatSource;

@@ -494,7 +494,7 @@ namespace GlassMaking
 					var output = properties["output"].AsObject<JsonItemStack?>(null, collectible.Code.Domain);
 					if(output!.Resolve(capi.World, "recipes collect"))
 					{
-						var outputItem = output.ResolvedItemstack;
+						var outputItem = output.ResolvedItemStack;
 						annealRecipes!.Add((collectible.ItemClass, collectible.Id), outputItem);
 						annealOutputs!.Add(outputItem.Collectible.Code);
 					}

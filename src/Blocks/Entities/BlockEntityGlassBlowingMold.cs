@@ -166,7 +166,7 @@ namespace GlassMaking.Blocks
 			}
 			if(Api.Side == EnumAppSide.Server)
 			{
-				var item = recipe.Output.ResolvedItemstack;
+				var item = recipe.Output.ResolvedItemStack;
 				if(splittable || hasContentsTransform)
 				{
 					contents = item.Clone();

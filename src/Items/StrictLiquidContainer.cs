@@ -22,7 +22,7 @@ namespace GlassMaking.Items
 				{
 					if(item.Resolve(api.World, "allowed liquid"))
 					{
-						(list ??= new List<ItemStack>()).Add(item.ResolvedItemstack);
+						(list ??= new List<ItemStack>()).Add(item.ResolvedItemStack);
 					}
 				}
 			}

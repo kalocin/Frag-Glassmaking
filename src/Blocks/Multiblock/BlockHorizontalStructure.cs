@@ -105,7 +105,7 @@ namespace GlassMaking.Blocks.Multiblock
 			{
 				if(handbookStack != null)
 				{
-					return new List<ItemStack>() { handbookStack.ResolvedItemstack };
+					return new List<ItemStack>() { handbookStack.ResolvedItemStack };
 				}
 				return null;
 			}

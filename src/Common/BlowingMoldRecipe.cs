@@ -1,13 +1,15 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Vintagestory.API.Common;
+using Vintagestory.API.Datastructures;
 using Vintagestory.API.Util;
 
 namespace GlassMaking
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
-	public class BlowingMoldRecipe : IRecipeBase<BlowingMoldRecipe>
+	public class BlowingMoldRecipe
 	{
 		[JsonProperty(Required = Required.DisallowNull)]
 		public CraftingRecipeIngredient Output = default!;
@@ -21,7 +23,7 @@ namespace GlassMaking
 
 		public bool Enabled { get; set; } = true;
 		public IRecipeIngredient[] Ingredients => Recipe;
-		IRecipeOutput IRecipeBase<BlowingMoldRecipe>.Output => Output.ReturnedStack;
+		public IRecipeOutput? RecipeOutput => Output.ReturnedStack;
 
 		public Dictionary<string, string[]> GetNameToCodeMapping(IWorldAccessor world)
 		{
@@ -77,13 +79,13 @@ namespace GlassMaking
 		public class GlassAmount : IRecipeIngredient
 		{
 			[JsonProperty]
-			public string Name { get; set; } = default!;
+			public string? Name { get; set; }
 
 			[JsonProperty(Required = Required.DisallowNull)]
-			public AssetLocation Code { get; set; } = default!;
+			public AssetLocation? Code { get; set; } = default!;
 
 			[JsonProperty]
-			public string[]? AllowedVariants;
+			public string[]? AllowedVariants { get; set; }
 
 			[JsonProperty(Required = Required.Always)]
 			public int Amount;
@@ -98,10 +100,56 @@ namespace GlassMaking
 				return true;
 			}
 
+			// IRecipeIngredient / IRecipeIngredientBase stubs — GlassAmount matches glass by code/amount,
+			// not via the standard ingredient-matching pipeline; these satisfy the interface only.
+			private int _quantity = 1;
+			int IRecipeIngredient.Quantity { get => _quantity; set => _quantity = value; }
+			private string _id = "";
+			string IRecipeIngredient.Id { get => _id; set => _id = value; }
+			JsonItemStack? IRecipeIngredient.ReturnedStack { get => null; set { } }
+			JsonObject? IRecipeIngredient.RecipeAttributes { get => null; set { } }
+			RecipeIngredientConsumeProperties IRecipeIngredient.ConsumeProperties => default;
+			void IRecipeIngredient.FillPlaceHolder(string key, string value) { }
+			bool IRecipeIngredient.Resolve(IWorldAccessor world, string sourceForErrorLogging) => true;
+			// IRecipeIngredientBase stubs
+			EnumItemClass IRecipeIngredientBase.Type { get => EnumItemClass.Item; set { } }
+			string[]? IRecipeIngredientBase.SkipVariants { get => null; set { } }
+			ComplexTagCondition<TagSet> IRecipeIngredientBase.Tags { get => default; set { } }
+			EnumRecipeMatchType IRecipeIngredientBase.MatchingType { get => EnumRecipeMatchType.Exact; set { } }
+			ItemStack? IRecipeIngredientBase.ResolvedItemStack { get => null; set { } }
+			bool IRecipeIngredientBase.SatisfiesAsIngredient(ItemStack inputStack, bool checkStackSize) => false;
+			// IByteSerializable
+			void IByteSerializable.ToBytes(BinaryWriter writer)
+			{
+				writer.Write(Code?.ToShortString() ?? "");
+				writer.Write(Amount);
+				writer.Write(Var);
+				writer.Write(Name ?? "");
+				writer.Write(AllowedVariants != null);
+				if(AllowedVariants != null)
+				{
+					writer.Write(AllowedVariants.Length);
+					foreach(var v in AllowedVariants) writer.Write(v);
+				}
+			}
+			void IByteSerializable.FromBytes(BinaryReader reader, IWorldAccessor resolver)
+			{
+				Code = new AssetLocation(reader.ReadString());
+				Amount = reader.ReadInt32();
+				Var = reader.ReadInt32();
+				Name = reader.ReadString();
+				if(reader.ReadBoolean())
+				{
+					AllowedVariants = new string[reader.ReadInt32()];
+					for(int i = 0; i < AllowedVariants.Length; i++) AllowedVariants[i] = reader.ReadString();
+				}
+			}
+			object ICloneable.Clone() => Clone();
+
 			public GlassAmount Clone()
 			{
 				return new GlassAmount() {
-					Code = Code.Clone(),
+					Code = Code?.Clone(),
 					Amount = Amount,
 					Var = Var,
 					Name = Name,

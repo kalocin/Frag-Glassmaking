@@ -43,7 +43,7 @@ namespace GlassMaking.Handbook
 								{
 									if(planBlock.replacement != null)
 									{
-										var item = (planBlock.replacement.Requirement ?? planBlock.replacement.Block)?.ResolvedItemstack;
+										var item = (planBlock.replacement.Requirement ?? planBlock.replacement.Block)?.ResolvedItemStack;
 										if(item != null)
 										{
 											int index = items.FindIndex(itm => itm.Equals(capi.World, item, GlobalConstants.IgnoredStackAttributes));

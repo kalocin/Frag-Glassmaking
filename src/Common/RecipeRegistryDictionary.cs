@@ -4,7 +4,7 @@ using Vintagestory.API.Common;
 
 namespace GlassMaking.Common
 {
-	public class RecipeRegistryDictionary<T> : RecipeRegistryBase where T : IByteSerializable, IRecipeBase, new()
+	public class RecipeRegistryDictionary<T> : RecipeRegistryBase where T : IRecipeBase, IGlassmakingRecipe, new()
 	{
 		public readonly List<T> Recipes;
 		public readonly Dictionary<string, T> Pairs;
@@ -64,7 +64,11 @@ namespace GlassMaking.Common
 		}
 	}
 
-	public interface IRecipeBase
+	/// <summary>
+	/// Mod-internal interface for recipes keyed by an AssetLocation code.
+	/// Renamed from IRecipeBase to avoid conflict with Vintagestory.API.Common.IRecipeBase added in 1.19+.
+	/// </summary>
+	public interface IGlassmakingRecipe
 	{
 		AssetLocation Code { get; }
 	}

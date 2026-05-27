@@ -33,11 +33,11 @@ namespace GlassMaking.Handbook
 					outComponents.AddHandbookBoldRichText(capi, Lang.Get("glassmaking:Mold for") + "\n", openDetailPageFor);
 					foreach(var recipe in recipes)
 					{
-						if(recipe.Output.ResolvedItemstack != null)
+						if(recipe.Output.ResolvedItemStack != null)
 						{
-							var element = new SlideshowItemstackTextComponent(capi, new ItemStack[] { recipe.Output.ResolvedItemstack }, 40.0,
+							var element = new SlideshowItemstackTextComponent(capi, new ItemStack[] { recipe.Output.ResolvedItemStack }, 40.0,
 								EnumFloat.Inline, cs => openDetailPageFor(GuiHandbookItemStackPage.PageCodeForStack(cs)));
-							element.ShowStackSize = recipe.Output.ResolvedItemstack.StackSize > 1;
+							element.ShowStackSize = recipe.Output.ResolvedItemStack.StackSize > 1;
 							element.PaddingRight = GuiElement.scaled(10.0);
 							outComponents.Add(element);
 

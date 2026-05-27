@@ -34,7 +34,7 @@ namespace GlassMaking.Handbook
 			List<WorkbenchRecipe>? recipes = null;
 			foreach(var recipe in mod.GetWorkbenchRecipes())
 			{
-				if(recipe.Value.Output.ResolvedItemstack != null && recipe.Value.Output.ResolvedItemstack.Equals(capi.World, itemstack, GlobalConstants.IgnoredStackAttributes))
+				if(recipe.Value.Output.ResolvedItemStack != null && recipe.Value.Output.ResolvedItemStack.Equals(capi.World, itemstack, GlobalConstants.IgnoredStackAttributes))
 				{
 					if(recipes == null) recipes = new List<WorkbenchRecipe>();
 					recipes.Add(recipe.Value);
@@ -54,7 +54,7 @@ namespace GlassMaking.Handbook
 					}
 					var recipe = recipes[i];
 					outComponents.Add(new RichTextComponent(capi, "• " + Lang.Get("glassmaking:Input ingredient") + "\n", CairoFont.WhiteSmallText()));
-					var element = new SlideshowItemstackTextComponent(capi, new ItemStack[] { recipe.Input.ResolvedItemstack }, 40.0, EnumFloat.Inline,
+					var element = new SlideshowItemstackTextComponent(capi, new ItemStack[] { recipe.Input.ResolvedItemStack }, 40.0, EnumFloat.Inline,
 						cs => openDetailPageFor(GuiHandbookItemStackPage.PageCodeForStack(cs)));
 					outComponents.Add(element);
 					outComponents.Add(new ClearFloatTextComponent(capi));

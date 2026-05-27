@@ -37,7 +37,7 @@ namespace GlassMaking.Items
 				var recipe = mod.GetWorkbenchRecipe(recipeInfo.GetString("code"));
 				if(recipe != null)
 				{
-					return Lang.Get("glassmaking:{0} (Workpiece)", recipe.Output.ResolvedItemstack.Collectible.GetHeldItemName(recipe.Output.ResolvedItemstack));
+					return Lang.Get("glassmaking:{0} (Workpiece)", recipe.Output.ResolvedItemStack.Collectible.GetHeldItemName(recipe.Output.ResolvedItemStack));
 				}
 			}
 			return base.GetHeldItemName(itemStack);

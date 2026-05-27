@@ -114,6 +114,17 @@ namespace GlassMaking.Items
 			renderinfo.ModelRef = meshRef;
 		}
 
+		// IContainedMeshSource — signature changed in 1.19+ to use ItemSlot instead of ItemStack
+		MeshData IContainedMeshSource.GenMesh(ItemSlot slot, ITextureAtlasAPI targetAtlas, BlockPos atBlockPos)
+		{
+			return GenMesh(slot.Itemstack, targetAtlas);
+		}
+
+		string IContainedMeshSource.GetMeshCacheKey(ItemSlot slot)
+		{
+			return GetMeshCacheKey(slot.Itemstack);
+		}
+
 		public MeshData GenMesh(ItemStack itemstack, ITextureAtlasAPI targetAtlas, BlockPos? forBlockPos = null)
 		{
 			curAtlas = targetAtlas;

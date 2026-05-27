@@ -16,7 +16,7 @@ using Vintagestory.API.MathTools;
 namespace GlassMaking
 {
 	[JsonObject(MemberSerialization.OptIn)]
-	public class GlassBlowingRecipe : IRecipeBase, IByteSerializable, IRecipeBase<GlassBlowingRecipe>
+	public class GlassBlowingRecipe : IRecipeBase, IGlassmakingRecipe
 	{
 		private static SmoothRadialShape EmptyShape = new SmoothRadialShape() { Segments = 1, Outer = new SmoothRadialShape.ShapePart[] { new SmoothRadialShape.ShapePart() { Vertices = new float[][] { new float[] { -1.5f, 0 } } } }, Inner = new SmoothRadialShape.ShapePart[] { new SmoothRadialShape.ShapePart() { Vertices = new float[][] { new float[] { -1.5f, 0 } } } } };
 
@@ -37,15 +37,21 @@ namespace GlassMaking
 
 		public IRecipeIngredient[] Ingredients => Steps;
 
-		IRecipeOutput IRecipeBase<GlassBlowingRecipe>.Output => filler;
+		AssetLocation IGlassmakingRecipe.Code => Code;
 
-		AssetLocation IRecipeBase.Code => Code;
-
-		private readonly PlaceholderFiller filler;
+		// IRecipeBase stubs — the VS framework requires these for recipe registration / loading.
+		int IRecipeBase.RecipeId { get => RecipeId; set => RecipeId = value; }
+		bool IRecipeBase.AverageDurability { get => false; set { } }
+		string? IRecipeBase.RequiresTrait { get => null; set { } }
+		bool IRecipeBase.ShowInCreatedBy { get => true; set { } }
+		IEnumerable<IRecipeIngredient> IRecipeBase.RecipeIngredients => Steps;
+		IRecipeOutput IRecipeBase.RecipeOutput => Output;
+		void IRecipeBase.OnParsed(IWorldAccessor world) { }
+		IEnumerable<IRecipeBase> IRecipeBase.GenerateRecipesForAllIngredientCombinations(IWorldAccessor world) => Array.Empty<IRecipeBase>();
+		object ICloneable.Clone() => Clone();
 
 		public GlassBlowingRecipe()
 		{
-			filler = new PlaceholderFiller(this);
 		}
 
 		public Dictionary<string, string[]> GetNameToCodeMapping(IWorldAccessor world)
@@ -104,7 +110,7 @@ namespace GlassMaking
 
 		public void GetRecipeInfo(ItemStack item, ITreeAttribute recipeAttribute, StringBuilder dsc, IWorldAccessor world, bool withDebugInfo)
 		{
-			dsc.AppendLine(Lang.Get("glassmaking:Recipe: {0}", Output.ResolvedItemstack.Collectible.GetHeldItemName(Output.ResolvedItemstack)));
+			dsc.AppendLine(Lang.Get("glassmaking:Recipe: {0}", Output.ResolvedItemStack.Collectible.GetHeldItemName(Output.ResolvedItemStack)));
 			int step = recipeAttribute.GetInt("step", 0);
 			dsc.AppendLine(Lang.Get("glassmaking:Step {0}/{1}", step + 1, Steps.Length));
 			var descriptor = world.Api.ModLoader.GetModSystem<GlassMakingMod>().GetPipeToolDescriptor(Steps[step].Tool);
@@ -212,7 +218,7 @@ namespace GlassMaking
 				int step = recipeAttribute.GetInt("step", 0) + 1;
 				if(step >= Steps.Length)
 				{
-					var item = Output.ResolvedItemstack.Clone();
+					var item = Output.ResolvedItemStack.Clone();
 					var pipe = (ItemGlassworkPipe)slot.Itemstack.Collectible;
 					item.Collectible.SetTemperature(byEntity.World, item, pipe.GetGlassTemperature(byEntity.World, slot.Itemstack));
 					if(!byEntity.TryGiveItemStack(item))
@@ -283,7 +289,7 @@ namespace GlassMaking
 			for(int i = 0; i < Steps.Length; i++)
 			{
 				Steps[i] = new GlassBlowingRecipeStep();
-				Steps[i].FromBytes(reader);
+				Steps[i].FromBytes(reader, resolver);
 			}
 			Output = new JsonItemStack();
 			Output.FromBytes(reader, resolver.ClassRegistry);
@@ -316,21 +322,6 @@ namespace GlassMaking
 			return other.Clone();
 		}
 
-		private class PlaceholderFiller : IRecipeOutput
-		{
-			private GlassBlowingRecipe recipe;
-
-			public PlaceholderFiller(GlassBlowingRecipe recipe)
-			{
-				this.recipe = recipe;
-			}
-
-			public void FillPlaceHolder(string key, string value)
-			{
-				recipe.Output.FillPlaceHolder(key, value);
-				recipe.Code = recipe.Code.CopyWithPath(recipe.Code.Path.Replace("{" + key + "}", value));
-			}
-		}
 	}
 
 	[JsonObject(MemberSerialization.OptIn)]
@@ -354,6 +345,31 @@ namespace GlassMaking
 		/// </summary>
 		public AssetLocation? Code { get; set; } = null;
 
+		// IRecipeIngredient / IRecipeIngredientBase stubs — glassblowing steps are tool descriptors,
+		// not item-matching ingredients. These members satisfy the interface but have no functional use here.
+		private int _quantity = 1;
+		int IRecipeIngredient.Quantity { get => _quantity; set => _quantity = value; }
+		private string _id = "";
+		string IRecipeIngredient.Id { get => _id; set => _id = value; }
+		private JsonItemStack? _returnedStack = null;
+		JsonItemStack? IRecipeIngredient.ReturnedStack { get => _returnedStack; set => _returnedStack = value; }
+		JsonObject? IRecipeIngredient.RecipeAttributes { get => null; set { } }
+		RecipeIngredientConsumeProperties IRecipeIngredient.ConsumeProperties => default;
+		void IRecipeIngredient.FillPlaceHolder(string key, string value)
+		{
+			if(Code != null) Code = Code.CopyWithPath(Code.Path.Replace("{" + key + "}", value));
+		}
+		bool IRecipeIngredient.Resolve(IWorldAccessor world, string sourceForErrorLogging) => true;
+		// IRecipeIngredientBase stubs
+		EnumItemClass IRecipeIngredientBase.Type { get => EnumItemClass.Item; set { } }
+		string[]? IRecipeIngredientBase.AllowedVariants { get => null; set { } }
+		string[]? IRecipeIngredientBase.SkipVariants { get => null; set { } }
+		ComplexTagCondition<TagSet> IRecipeIngredientBase.Tags { get => default; set { } }
+		EnumRecipeMatchType IRecipeIngredientBase.MatchingType { get => EnumRecipeMatchType.Exact; set { } }
+		ItemStack? IRecipeIngredientBase.ResolvedItemStack { get => null; set { } }
+		bool IRecipeIngredientBase.SatisfiesAsIngredient(ItemStack inputStack, bool checkStackSize) => false;
+		object ICloneable.Clone() => Clone();
+
 		public void ToBytes(BinaryWriter writer)
 		{
 			writer.Write(Tool);
@@ -365,7 +381,7 @@ namespace GlassMaking
 			if(Attributes != null) writer.Write(Attributes.Token.ToString());
 		}
 
-		public void FromBytes(BinaryReader reader)
+		public void FromBytes(BinaryReader reader, IWorldAccessor resolver)
 		{
 			Tool = reader.ReadString().ToLowerInvariant();
 			if(reader.ReadBoolean())

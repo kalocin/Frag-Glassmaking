@@ -131,9 +131,9 @@ namespace GlassMaking.Blocks
 
 						Api.World.BlockAccessor.SetBlock(0, Pos);
 
-						if(Block.Sounds?.Place != null)
+						if(Block.Sounds?.Place.Location != null)
 						{
-							Api.World.PlaySoundAt(Block.Sounds.Place, Pos.X, Pos.Y, Pos.Z, byPlayer, false);
+							Api.World.PlaySoundAt(Block.Sounds.Place.Location, Pos.X, Pos.Y, Pos.Z, byPlayer, false);
 						}
 
 						handled = true;
@@ -179,7 +179,7 @@ namespace GlassMaking.Blocks
 			var recipe = FindRecipe(glassCode);
 			if(recipe == null) return null;
 
-			return new ItemStack[] { recipe.Output.ResolvedItemstack.Clone() };
+			return new ItemStack[] { recipe.Output.ResolvedItemStack.Clone() };
 		}
 
 		public override void FromTreeAttributes(ITreeAttribute tree, IWorldAccessor worldForResolve)

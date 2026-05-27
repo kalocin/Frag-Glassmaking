@@ -1,5 +1,6 @@
 ﻿using GlassMaking.Common;
 using Vintagestory.API.Common;
+using Vintagestory.API.Server;
 using Vintagestory.ServerMods;
 
 namespace GlassMaking
@@ -29,9 +30,9 @@ namespace GlassMaking
 		{
 			if(api.Side == EnumAppSide.Server)
 			{
-				var recLoader = api.ModLoader.GetModSystem<RecipeLoader>();
-				recLoader.LoadRecipes<GlassBlowingRecipe>("glassblowing recipe", "recipes/glassblowing", RegisterGlassblowingRecipe);
-				recLoader.LoadRecipes<WorkbenchRecipe>("glassworkbench recipe", "recipes/glassworkbench", RegisterWorkbenchRecipe);
+				var sapi = (ICoreServerAPI)api;
+				RecipeLoader.LoadRecipes<GlassBlowingRecipe>(sapi, "glassblowing recipe", "recipes/glassblowing", false, r => RegisterGlassblowingRecipe((GlassBlowingRecipe)r));
+				RecipeLoader.LoadRecipes<WorkbenchRecipe>(sapi, "glassworkbench recipe", "recipes/glassworkbench", false, r => RegisterWorkbenchRecipe((WorkbenchRecipe)r));
 			}
 		}
 

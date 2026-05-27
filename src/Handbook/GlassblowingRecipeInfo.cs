@@ -28,7 +28,7 @@ namespace GlassMaking.Handbook
 			List<GlassBlowingRecipe>? recipes = null;
 			foreach(var recipe in mod.GetGlassBlowingRecipes())
 			{
-				if(recipe.Value.Output.ResolvedItemstack != null && recipe.Value.Output.ResolvedItemstack.Equals(capi.World, itemstack, GlobalConstants.IgnoredStackAttributes))
+				if(recipe.Value.Output.ResolvedItemStack != null && recipe.Value.Output.ResolvedItemStack.Equals(capi.World, itemstack, GlobalConstants.IgnoredStackAttributes))
 				{
 					if(recipes == null) recipes = new List<GlassBlowingRecipe>();
 					recipes.Add(recipe.Value);

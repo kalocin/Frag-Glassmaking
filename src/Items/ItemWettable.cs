@@ -96,7 +96,7 @@ namespace GlassMaking.Items
 			SetHumidity(itemStack, GetHumidity(itemStack, world) - value);
 		}
 
-		public override void OnCreatedByCrafting(ItemSlot[] allInputslots, ItemSlot outputSlot, GridRecipe byRecipe)
+		public override void OnCreatedByCrafting(ItemSlot[] allInputslots, ItemSlot outputSlot, IRecipeBase byRecipe)
 		{
 			base.OnCreatedByCrafting(allInputslots, outputSlot, byRecipe);
 			SetHumidity(outputSlot.Itemstack, 0);

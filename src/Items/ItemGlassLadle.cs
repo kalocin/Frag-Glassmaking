@@ -336,9 +336,10 @@ namespace GlassMaking.Items
 			base.OnBeforeRender(capi, itemstack, target, ref renderinfo);
 		}
 
-		public override void OnConsumedByCrafting(ItemSlot[] allInputSlots, ItemSlot stackInSlot, GridRecipe gridRecipe, CraftingRecipeIngredient fromIngredient, IPlayer byPlayer, int quantity)
+		public override void OnConsumedByCrafting(ItemSlot[] allInputSlots, ItemSlot stackInSlot, IRecipeBase recipe, IRecipeIngredient fromIngredient, IPlayer byPlayer, int quantity)
 		{
-			if(gridRecipe.Output.ResolvedItemstack?.Item is ItemGlassLadle && gridRecipe.Attributes?.IsTrue("breakglass") == true)
+			var gridRecipe = recipe as GridRecipe;
+			if(gridRecipe?.Output.ResolvedItemStack?.Item is ItemGlassLadle && gridRecipe.Attributes?.IsTrue("breakglass") == true)
 			{
 				if(api.Side == EnumAppSide.Server)
 				{
@@ -356,17 +357,18 @@ namespace GlassMaking.Items
 					}
 				}
 			}
-			base.OnConsumedByCrafting(allInputSlots, stackInSlot, gridRecipe, fromIngredient, byPlayer, quantity);
+			base.OnConsumedByCrafting(allInputSlots, stackInSlot, recipe, fromIngredient, byPlayer, quantity);
 		}
 
-		public override bool MatchesForCrafting(ItemStack inputStack, GridRecipe gridRecipe, CraftingRecipeIngredient ingredient)
+		public override bool MatchesForCrafting(ItemStack inputStack, IRecipeBase recipe, IRecipeIngredient ingredient)
 		{
-			if(gridRecipe.Output.ResolvedItemstack?.Item is ItemGlassLadle && ingredient.ResolvedItemstack?.Item is ItemGlassLadle &&
+			var gridRecipe = recipe as GridRecipe;
+			if(gridRecipe?.Output.ResolvedItemStack?.Item is ItemGlassLadle && ingredient.ResolvedItemStack?.Item is ItemGlassLadle &&
 				gridRecipe.Attributes?.IsTrue("breakglass") == true)
 			{
 				return inputStack.Attributes.HasAttribute("glassmelt");
 			}
-			return base.MatchesForCrafting(inputStack, gridRecipe, ingredient);
+			return base.MatchesForCrafting(inputStack, recipe, ingredient);
 		}
 
 		public bool IsWorkingTemperature(IWorldAccessor world, ItemStack item)

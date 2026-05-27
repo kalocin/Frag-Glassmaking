@@ -13,7 +13,7 @@ using Vintagestory.API.Util;
 namespace GlassMaking
 {
 	[JsonObject(MemberSerialization.OptIn)]
-	public class WorkbenchRecipe : IRecipeBase, IByteSerializable, IRecipeBase<WorkbenchRecipe>
+	public class WorkbenchRecipe : IRecipeBase, IGlassmakingRecipe
 	{
 		public int RecipeId;
 
@@ -35,19 +35,23 @@ namespace GlassMaking
 
 		public CraftingRecipeIngredient[] Ingredients => ingredients ?? (ingredients = new CraftingRecipeIngredient[] { Input });
 
-		IRecipeIngredient[] IRecipeBase<WorkbenchRecipe>.Ingredients => Ingredients;
-
-		IRecipeOutput IRecipeBase<WorkbenchRecipe>.Output => filler;
-
-		AssetLocation IRecipeBase.Code => Code;
+		AssetLocation IGlassmakingRecipe.Code => Code;
 
 		private CraftingRecipeIngredient[]? ingredients = null;
 
-		private readonly PlaceholderFiller filler;
+		// IRecipeBase stubs — the VS framework requires these for recipe registration / loading.
+		int IRecipeBase.RecipeId { get => RecipeId; set => RecipeId = value; }
+		bool IRecipeBase.AverageDurability { get => false; set { } }
+		string? IRecipeBase.RequiresTrait { get => null; set { } }
+		bool IRecipeBase.ShowInCreatedBy { get => true; set { } }
+		IEnumerable<IRecipeIngredient> IRecipeBase.RecipeIngredients => new IRecipeIngredient[] { Input };
+		IRecipeOutput IRecipeBase.RecipeOutput => Output;
+		void IRecipeBase.OnParsed(IWorldAccessor world) { }
+		IEnumerable<IRecipeBase> IRecipeBase.GenerateRecipesForAllIngredientCombinations(IWorldAccessor world) => Array.Empty<IRecipeBase>();
+		object ICloneable.Clone() => Clone();
 
 		public WorkbenchRecipe()
 		{
-			filler = new PlaceholderFiller(this);
 		}
 
 		public Dictionary<string, string[]> GetNameToCodeMapping(IWorldAccessor world)
@@ -175,43 +179,6 @@ namespace GlassMaking
 			return other.Clone();
 		}
 
-		private class PlaceholderFiller : IRecipeOutput
-		{
-			private WorkbenchRecipe recipe;
-
-			public PlaceholderFiller(WorkbenchRecipe recipe)
-			{
-				this.recipe = recipe;
-			}
-
-			public void FillPlaceHolder(string key, string value)
-			{
-				recipe.Output.FillPlaceHolder(key, value);
-				var wkey = "{" + key + "}";
-				recipe.Code = recipe.Code.CopyWithPath(recipe.Code.Path.Replace(wkey, value));
-				foreach(var step in recipe.Steps)
-				{
-					if(step.Shape != null)
-					{
-						step.Shape.Base = step.Shape.Base.CopyWithPath(step.Shape.Base.Path.Replace(wkey, value));
-					}
-					if(step.Textures != null)
-					{
-						foreach(var texture in step.Textures)
-						{
-							if(texture.Value.Base != null)
-							{
-								texture.Value.Base = texture.Value.Base.CopyWithPath(texture.Value.Base.Path.Replace(wkey, value));
-							}
-						}
-					}
-					foreach(var tool in step.Tools)
-					{
-						tool.Value?.FillPlaceHolder(key, value);
-					}
-				}
-			}
-		}
 	}
 
 	[JsonObject]

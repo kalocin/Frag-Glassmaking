@@ -28,13 +28,19 @@ namespace GlassMaking.Items
 
 		private Dictionary<string, ItemStack[]> recipeLiquidContents = new Dictionary<string, ItemStack[]>();
 
-		public override void OnHandbookRecipeRender(ICoreClientAPI capi, GridRecipe gridRecipe, ItemSlot dummyslot, double x, double y, double z, double size)
+		public override void OnHandbookRecipeRender(ICoreClientAPI capi, IRecipeBase recipe, ItemSlot dummyslot, double x, double y, double z, double size)
 		{
+			var gridRecipe = recipe as GridRecipe;
+			if(gridRecipe == null)
+			{
+				base.OnHandbookRecipeRender(capi, recipe, dummyslot, x, y, z, size);
+				return;
+			}
 			// 1.16.0: Fugly (but backwards compatible) hack: We temporarily store the ingredient index in an unused field of ItemSlot so that OnHandbookRecipeRender() has access to that number. Proper solution would be to alter the method signature to pass on this value.
 			int rindex = dummyslot.BackgroundIcon.ToInt();
-			var ingredient = gridRecipe.resolvedIngredients[rindex];
+			var ingredient = gridRecipe.ResolvedIngredients?[rindex];
 
-			JsonObject? rprops = ingredient.RecipeAttributes;
+			JsonObject? rprops = ingredient?.RecipeAttributes;
 			if(rprops?.Exists != true || rprops?["requiresContent"].Exists != true)
 			{
 				rprops = gridRecipe.Attributes?["liquidContainerProps"];
@@ -42,7 +48,7 @@ namespace GlassMaking.Items
 
 			if(rprops?.Exists != true)
 			{
-				base.OnHandbookRecipeRender(capi, gridRecipe, dummyslot, x, y, z, size);
+				base.OnHandbookRecipeRender(capi, recipe, dummyslot, x, y, z, size);
 				return;
 			}
 
@@ -471,9 +477,9 @@ namespace GlassMaking.Items
 				nutriProps.Health *= litre;
 				nutriProps.Satiety *= litre;
 				nutriProps.EatenStack = new JsonItemStack();
-				nutriProps.EatenStack.ResolvedItemstack = itemstack.Clone();
-				nutriProps.EatenStack.ResolvedItemstack.StackSize = 1;
-				((ILiquidSink)nutriProps.EatenStack.ResolvedItemstack.Collectible).SetContent(nutriProps.EatenStack.ResolvedItemstack, null);
+				nutriProps.EatenStack.ResolvedItemStack = itemstack.Clone();
+				nutriProps.EatenStack.ResolvedItemStack.StackSize = 1;
+				((ILiquidSink)nutriProps.EatenStack.ResolvedItemStack.Collectible).SetContent(nutriProps.EatenStack.ResolvedItemStack, null);
 
 				return nutriProps;
 			}
@@ -496,7 +502,7 @@ namespace GlassMaking.Items
 
 			if(GetCurrentLitres(itemslot.Itemstack) >= CapacityLitres) return false;
 
-			var contentStack = props.WhenFilled.Stack.ResolvedItemstack.Clone();
+			var contentStack = props.WhenFilled.Stack.ResolvedItemStack.Clone();
 			var cprops = GetContainableProps(contentStack);
 			contentStack.StackSize = 999999;
 
@@ -520,9 +526,9 @@ namespace GlassMaking.Items
 			WaterTightContainableProps? props = block.Attributes?["waterTightContainerProps"].AsObject<WaterTightContainableProps>();
 			if(props?.WhenFilled == null || !props.Containable) return;
 
-			if(props.WhenFilled.Stack.ResolvedItemstack == null) props.WhenFilled.Stack.Resolve(world, "liquidcontainerbase");
+			if(props.WhenFilled.Stack.ResolvedItemStack == null) props.WhenFilled.Stack.Resolve(world, "liquidcontainerbase");
 
-			ItemStack whenFilledStack = props.WhenFilled.Stack.ResolvedItemstack!;
+			ItemStack whenFilledStack = props.WhenFilled.Stack.ResolvedItemStack!;
 
 			ItemStack? contentStack = GetContent(byEntityItem.Itemstack);
 			bool canFill = contentStack == null || (contentStack.Equals(world, whenFilledStack, GlobalConstants.IgnoredStackAttributes) && GetCurrentLitres(byEntityItem.Itemstack) < CapacityLitres);
@@ -600,7 +606,7 @@ namespace GlassMaking.Items
 			{
 				props.WhenSpilled.Stack.Resolve(byEntity.World, "liquidcontainerbasespill");
 
-				ItemStack stack = props.WhenSpilled.Stack.ResolvedItemstack.Clone();
+				ItemStack stack = props.WhenSpilled.Stack.ResolvedItemStack.Clone();
 				stack.StackSize = contentStack.StackSize;
 
 				byEntity.World.SpawnItemEntity(stack, blockSel.Position.ToVec3d().Add(blockSel.HitPosition));
@@ -792,17 +798,18 @@ namespace GlassMaking.Items
 			return;
 		}
 
-		public override bool MatchesForCrafting(ItemStack inputStack, GridRecipe gridRecipe, CraftingRecipeIngredient ingredient)
+		public override bool MatchesForCrafting(ItemStack inputStack, IRecipeBase recipe, IRecipeIngredient ingredient)
 		{
+			var gridRecipe = recipe as GridRecipe;
 			JsonObject? rprops = ingredient.RecipeAttributes;
 			if(rprops?.Exists != true || rprops?["requiresContent"].Exists != true)
 			{
-				rprops = gridRecipe.Attributes?["liquidContainerProps"];
+				rprops = gridRecipe?.Attributes?["liquidContainerProps"];
 			}
 
 			if(rprops?.Exists != true)
 			{
-				return base.MatchesForCrafting(inputStack, gridRecipe, ingredient);
+				return base.MatchesForCrafting(inputStack, recipe, ingredient);
 			}
 
 			string contentCode = rprops["requiresContent"]["code"].AsString();
@@ -823,17 +830,18 @@ namespace GlassMaking.Items
 			return a && b && c;
 		}
 
-		public override void OnConsumedByCrafting(ItemSlot[] allInputSlots, ItemSlot stackInSlot, GridRecipe gridRecipe, CraftingRecipeIngredient fromIngredient, IPlayer byPlayer, int quantity)
+		public override void OnConsumedByCrafting(ItemSlot[] allInputSlots, ItemSlot stackInSlot, IRecipeBase recipe, IRecipeIngredient fromIngredient, IPlayer byPlayer, int quantity)
 		{
+			var gridRecipe = recipe as GridRecipe;
 			JsonObject? rprops = fromIngredient.RecipeAttributes;
 			if(rprops?.Exists != true || rprops?["requiresContent"].Exists != true)
 			{
-				rprops = gridRecipe.Attributes?["liquidContainerProps"];
+				rprops = gridRecipe?.Attributes?["liquidContainerProps"];
 			}
 
 			if(rprops?.Exists != true)
 			{
-				base.OnConsumedByCrafting(allInputSlots, stackInSlot, gridRecipe, fromIngredient, byPlayer, quantity);
+				base.OnConsumedByCrafting(allInputSlots, stackInSlot, recipe, fromIngredient, byPlayer, quantity);
 				return;
 			}
 

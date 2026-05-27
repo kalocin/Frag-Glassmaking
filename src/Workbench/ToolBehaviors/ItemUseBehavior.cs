@@ -57,7 +57,7 @@ namespace GlassMaking.Workbench.ToolBehaviors
 					return;
 				}
 
-				int quantity = (ingredient.IsWildCard ? ingredient.Quantity : ingredient.ResolvedItemstack.StackSize);
+				int quantity = (ingredient.IsWildCard ? ingredient.Quantity : ingredient.ResolvedItemStack.StackSize);
 				slot.Itemstack.StackSize -= quantity;
 				if(slot.Itemstack.StackSize <= 0)
 				{
@@ -67,7 +67,7 @@ namespace GlassMaking.Workbench.ToolBehaviors
 
 				if(ingredient.ReturnedStack != null)
 				{
-					ItemStack item = ingredient.ReturnedStack.ResolvedItemstack.Clone();
+					ItemStack item = ingredient.ReturnedStack.ResolvedItemStack.Clone();
 					if(!byPlayer.InventoryManager.TryGiveItemstack(item, true))
 					{
 						world.SpawnItemEntity(item, byPlayer.Entity.Pos.XYZ);
@@ -83,7 +83,7 @@ namespace GlassMaking.Workbench.ToolBehaviors
 				if(TryGetIngredient(world, json, recipe.Code, out var ingredient))
 				{
 					return new WorldInteraction[] { new WorldInteraction() {
-						Itemstacks = new ItemStack[] { ingredient.ResolvedItemstack },
+						Itemstacks = new ItemStack[] { ingredient.ResolvedItemStack },
 						MouseButton = EnumMouseButton.Right,
 						ActionLangCode = "glassmaking:workbench-tool-item-use"
 					} };
