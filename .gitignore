@@ -1,5 +1,7 @@
-/glassmaking.dll
-/glassmaking.pdb
 *.csproj.user
+.vs/
 /bin/
 /obj/
+/Releases/
+/local/
+Properties/localSettings.props
