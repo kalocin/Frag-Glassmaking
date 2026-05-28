@@ -8,7 +8,7 @@
 	"textureSizes": {
 	},
 	"textures": {
-		"ebony": "survival:block/wood/planks/ebony1",
+		"ebony": "game:block/wood/planks/ebony1",
 		"metal": "game:block/metal/ingot/steel"
 	},
 	"elements": [

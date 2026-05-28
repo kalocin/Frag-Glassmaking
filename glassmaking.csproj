@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ModName>Glassmaking</ModName>
     <ModType>code</ModType>
-    <ModVersion>1.5.1</ModVersion>
+    <ModVersion>1.5.2</ModVersion>
     <ModId>glassmaking</ModId>
     <Description>Core system for melting and processing glass</Description>
     <Side>universal</Side>

@@ -1,11 +1,11 @@
 [
 	{
-		"code": "glassmaking:jacks",
+		"code": "glassmaking:jacks-{metal}",
 		"ingredient": {
 			"name": "metal",
 			"type": "item",
 			"code": "game:ingot-*",
-			"allowedVariants": [ "steel" ]
+			"allowedVariants": [ "tinbronze", "bismuthbronze", "blackbronze", "iron", "steel" ]
 		},
 		"pattern": [
 			[
@@ -16,16 +16,16 @@
 		],
 		"output": {
 			"type": "item",
-			"code": "jacks"
+			"code": "jacks-{metal}"
 		}
 	},
 	{
-		"code": "glassmaking:tweezers",
+		"code": "glassmaking:tweezers-{metal}",
 		"ingredient": {
 			"name": "metal",
 			"type": "item",
 			"code": "game:ingot-*",
-			"allowedVariants": [ "steel" ]
+			"allowedVariants": [ "tinbronze", "bismuthbronze", "blackbronze", "iron", "steel" ]
 		},
 		"pattern": [
 			[
@@ -37,7 +37,7 @@
 		],
 		"output": {
 			"type": "item",
-			"code": "tweezers"
+			"code": "tweezers-{metal}"
 		}
 	}
 ]

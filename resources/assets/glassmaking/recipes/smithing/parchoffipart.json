@@ -1,10 +1,10 @@
 {
-	"code": "glassmaking:parchoffipart",
+	"code": "glassmaking:parchoffipart-{metal}",
 	"ingredient": {
 		"name": "metal",
 		"type": "item",
 		"code": "game:ingot-*",
-		"allowedVariants": [ "steel" ]
+		"allowedVariants": [ "tinbronze", "bismuthbronze", "blackbronze", "iron", "steel" ]
 	},
 	"pattern": [
 		[
@@ -16,7 +16,7 @@
 	],
 	"output": {
 		"type": "item",
-		"code": "parchoffipart",
+		"code": "parchoffipart-{metal}",
 		"quantity": 2
 	}
 }

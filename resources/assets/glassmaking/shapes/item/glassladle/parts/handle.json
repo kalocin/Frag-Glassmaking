@@ -9,7 +9,7 @@
 		"iron": [32,16]
 	},
 	"textures": {
-		"iron": "survival:block/metal/ingot/iron"
+		"iron": "game:block/metal/ingot/iron"
 	},
 	"elements": [
 		{
