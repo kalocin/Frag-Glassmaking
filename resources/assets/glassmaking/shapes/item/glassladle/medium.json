@@ -9,8 +9,8 @@
 		"iron": [32,16]
 	},
 	"textures": {
-		"ebony": "game:item/tool/material/ebony",
-		"iron": "game:item/tool/material/iron"
+		"ebony": "survival:block/wood/planks/ebony1",
+		"iron": "survival:block/metal/ingot/iron"
 	},
 	"elements": [
 		{

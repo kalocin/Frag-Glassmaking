@@ -1,5 +1,6 @@
 [
 	{
+		"code": "glassmaking:lathepart-chuckbody",
 		"ingredient": {
 			"name": "metal",
 			"type": "item",
@@ -32,6 +33,7 @@
 		}
 	},
 	{
+		"code": "glassmaking:lathepart-chuckjaw",
 		"ingredient": {
 			"name": "metal",
 			"type": "item",

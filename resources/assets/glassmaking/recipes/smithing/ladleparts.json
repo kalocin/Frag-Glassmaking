@@ -1,5 +1,6 @@
 [
 	{
+		"code": "glassmaking:glassladlepart-large",
 		"ingredient": {
 			"name": "metal",
 			"type": "item",
@@ -65,6 +66,7 @@
 		}
 	},
 	{
+		"code": "glassmaking:glassladlepart-medium",
 		"ingredient": {
 			"name": "metal",
 			"type": "item",
@@ -112,6 +114,7 @@
 		}
 	},
 	{
+		"code": "glassmaking:glassladlepart-small",
 		"ingredient": {
 			"name": "metal",
 			"type": "item",
@@ -148,6 +151,7 @@
 		}
 	},
 	{
+		"code": "glassmaking:glassladlepart-handle",
 		"ingredient": {
 			"name": "metal",
 			"type": "item",
