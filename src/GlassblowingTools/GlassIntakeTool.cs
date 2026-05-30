@@ -2,7 +2,9 @@
 using GlassMaking.Items;
 using GlassMaking.Items.Behavior;
 using System;
+using Vintagestory.API.Client;
 using Vintagestory.API.Common;
+using Vintagestory.API.Config;
 using Vintagestory.API.Datastructures;
 
 namespace GlassMaking.GlassblowingTools
@@ -28,6 +30,7 @@ namespace GlassMaking.GlassblowingTools
 			if(firstEvent && blockSel != null && TryGetRecipeStep(slot, byEntity, out var step, true, true))
 			{
 				var source = byEntity.World.BlockAccessor.GetBlockEntity(blockSel.Position) as IGlassmeltSource;
+
 				if(source != null && source.CanInteract(byEntity, blockSel))
 				{
 					int sourceAmount = source.GetGlassAmount();
@@ -53,6 +56,21 @@ namespace GlassMaking.GlassblowingTools
 						}
 					}
 				}
+			}
+			else if(firstEvent && blockSel != null
+				&& slot.Itemstack.Collectible is ItemGlassworkPipe pipe
+				&& pipe.GetActiveCraft(slot.Itemstack) == null
+				&& byEntity.World.BlockAccessor.GetBlockEntity(blockSel.Position) is IGlassmeltSource glassSrc
+				&& glassSrc.CanInteract(byEntity, blockSel)
+				&& glassSrc.GetGlassAmount() > 0)
+			{
+				if(api.Side == EnumAppSide.Client)
+				{
+					((ICoreClientAPI)api).TriggerIngameError(this, "norecipe",
+						Lang.Get("Select a glassblowing recipe first (press F)"));
+				}
+				handHandling = EnumHandHandling.PreventDefault;
+				handling = EnumHandling.PreventSubsequent;
 			}
 			base.OnHeldInteractStart(slot, byEntity, blockSel, entitySel, firstEvent, ref handHandling, ref handling);
 		}

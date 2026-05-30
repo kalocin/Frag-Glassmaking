@@ -168,7 +168,7 @@ namespace GlassMaking.ToolDescriptors
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private static string GetCodeString(GlassBlowingRecipeStep step)
 		{
-			return step.Code?.ToShortString() ?? step.Attributes!["name"].AsString();
+			return (step.Code ?? new AssetLocation(step.Attributes!["code"].AsString())).ToShortString();
 		}
 	}
 }

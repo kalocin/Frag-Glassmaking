@@ -47,7 +47,7 @@ namespace GlassMaking
 		IEnumerable<IRecipeIngredient> IRecipeBase.RecipeIngredients => Steps;
 		IRecipeOutput IRecipeBase.RecipeOutput => Output;
 		void IRecipeBase.OnParsed(IWorldAccessor world) { }
-		IEnumerable<IRecipeBase> IRecipeBase.GenerateRecipesForAllIngredientCombinations(IWorldAccessor world) => Array.Empty<IRecipeBase>();
+		IEnumerable<IRecipeBase> IRecipeBase.GenerateRecipesForAllIngredientCombinations(IWorldAccessor world) => new IRecipeBase[] { this };
 		object ICloneable.Clone() => Clone();
 
 		public GlassBlowingRecipe()

@@ -1,6 +1,5 @@
 [
     {
-        "side": "Server",
         "file": "game:itemtypes/tool/shears",
         "op": "add",
         "path": "/tooltierbytype",
@@ -17,35 +16,54 @@
         }
     },
     {
-        "side": "Server",
         "file": "game:itemtypes/tool/shears",
         "op": "add",
-        "path": "/behaviors",
-        "value": []
-    },
-    {
-        "side": "Server",
-        "file": "game:itemtypes/tool/shears",
-        "op": "add",
-        "path": "/behaviors/-",
+        "path": "/behaviorsByType/@(.*-steel|.*-meteoriciron|.*-iron)/-",
         "value": {
             "name": "glassmaking:gbt-tooluse",
             "properties": {
                 "tool": "cutoff",
-                "animation": "gwtoolcutoff"
+                "animation": "gwtoolcutoff",
+                "minTier": 0
             }
         }
     },
     {
-        "side": "Server",
         "file": "game:itemtypes/tool/shears",
         "op": "add",
-        "path": "/behaviors/-",
+        "path": "/behaviorsByType/@(.*-steel|.*-meteoriciron|.*-iron)/-",
         "value": {
             "name": "glassmaking:gbt-tooluse",
             "properties": {
                 "tool": "incise",
-                "animation": "gwtoolincise"
+                "animation": "gwtoolincise",
+                "minTier": 0
+            }
+        }
+    },
+    {
+        "file": "game:itemtypes/tool/shears",
+        "op": "add",
+        "path": "/behaviorsByType/*/-",
+        "value": {
+            "name": "glassmaking:gbt-tooluse",
+            "properties": {
+                "tool": "cutoff",
+                "animation": "gwtoolcutoff",
+                "minTier": 0
+            }
+        }
+    },
+    {
+        "file": "game:itemtypes/tool/shears",
+        "op": "add",
+        "path": "/behaviorsByType/*/-",
+        "value": {
+            "name": "glassmaking:gbt-tooluse",
+            "properties": {
+                "tool": "incise",
+                "animation": "gwtoolincise",
+                "minTier": 0
             }
         }
     }
