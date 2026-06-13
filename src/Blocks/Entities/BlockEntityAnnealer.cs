@@ -336,6 +336,9 @@ namespace GlassMaking.Blocks
 
 		private void OnCommonTick(float dt)
 		{
+			// Runs before the heatSource guard; raw glass can shatter even with no heat source attached.
+			if(Api.Side == EnumAppSide.Server) ShatterCooledItems();
+
 			if(heatSource == null) return;
 
 			bool anyHot = false;
@@ -409,6 +412,39 @@ namespace GlassMaking.Blocks
 			}
 
 			heatSource.OnTick(dt);
+		}
+
+		/// <summary>
+		/// Breaks any raw glass that has cooled below the shatter threshold.
+		/// Shards are dropped as item entities because a slot cannot hold the original item and new shards simultaneously.
+		/// </summary>
+		private void ShatterCooledItems()
+		{
+			bool changed = false;
+			for(int i = 0; i < ItemCapacity; i++)
+			{
+				var slot = inventory[i];
+				if(slot.Empty) continue;
+				var stack = slot.Itemstack;
+				if(!GlassShatter.ShouldShatter(Api.World, stack)) continue;
+
+				slot.Itemstack = null;
+				processes[i] = null;
+				changed = true;
+
+				var spawnPos = new Vec3d(Pos.X + 0.5, Pos.Y + 0.5, Pos.Z + 0.5);
+				foreach(var shardStack in GlassShatter.CreateShardStacks(Api.World, stack))
+				{
+					Api.World.SpawnItemEntity(shardStack, spawnPos);
+				}
+				Api.World.PlaySoundAt(new AssetLocation("game", "sounds/block/glass"), Pos.X + 0.5, Pos.Y + 0.5, Pos.Z + 0.5, null, true, 16f);
+			}
+
+			if(changed)
+			{
+				UpdateGrid();
+				MarkDirty(true);
+			}
 		}
 
 		private void ResolveProcessInfo(int index)

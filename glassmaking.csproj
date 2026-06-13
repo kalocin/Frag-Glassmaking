@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ModName>Glassmaking Fork</ModName>
     <ModType>code</ModType>
-    <ModVersion>1.5.7</ModVersion>
+    <ModVersion>1.5.8</ModVersion>
     <ModId>glassmakingfork</ModId>
     <Description>Core system for melting and processing glass</Description>
     <Side>universal</Side>
